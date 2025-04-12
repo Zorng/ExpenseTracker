@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #8BE323;
+  --color-text: #293241;
+  --color-accent: #9747FF;
+  --color-accent-hover: #7939CC;
+  --color-secondary: #A1B196;
+  --color-secondary-hover: #818E78;
+  --color-abort: #D53538;
+  --color-abort-hover: #AA2A2D;
+  --color-focus: #37A8FF;
+
+  --text-h1: 1.5rem;  /*24px*/
+  --text-h2: 1.25rem;    /*20px*/
+  --text-h3: 1rem;  /*16px*/
+  --text-h4: 0.875rem;  /*14px*/
+  --text-para: 0.75rem;  /*12px*/
+  --text-sPara: 0.625rem;  /*10*/
+}
+
+.x-h1 {
+  font-size: var(--text-h1);
+  font-weight: 700;
+}
+.x-h2 {
+  font-size: var(--text-h2);
+  font-weight: 600;
+}
+.x-h3 {
+  font-size: var(--text-h3);
+  font-weight: 600;
+}
+.x-h4 {
+  font-size: var(--text-h4);
+  font-weight: 500;
+}
+.x-para {
+  font-size: var(--text-para);
+  font-weight: 400;
+}
+.x-sPara {
+  font-size: var(--text-sPara);
+  font-weight: 400;
+}
+
+:root {
+  background: #E0FBFC;
+}
