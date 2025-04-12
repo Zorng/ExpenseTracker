@@ -1,25 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header.jsx";
 
 const months = ["January", "February", "March", "April", "May", "June", 
                "July", "August", "September", "October", "November", "December"];
 
+// Simplified color palette for expense categories
+const categoryColors = {
+    "Rent": "#9747FF",
+    "Food": "#D53538",
+    "Subscription": "#8BE323",
+    "Gas": "#37A8FF"
+};
+
 function Summary() {
     const [showMonthDropdown, setShowMonthDropdown] = useState(false);
-    const [selectedYear, setSelectedYear] = useState(2025);
-    const [selectedMonth, setSelectedMonth] = useState("June");
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState(months[new Date().getMonth()]);
     const [currency, setCurrency] = useState("USD");
+    const [expenses, setExpenses] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
     
-    // Sample expense data
-    const expenseData = {
-        Rent: { amount: 200, color: "#9747FF" },
-        Food: { amount: 100, color: "#D53538" },
-        Subscription: { amount: 70, color: "#8BE323" },
-        Gas: { amount: 50, color: "#37A8FF" }
+    // Fetch or generate expense data when month/year changes
+    useEffect(() => {
+        setIsLoading(true);
+        
+        // Simulate API call with setTimeout
+        setTimeout(() => {
+            // For demo purposes, we'll generate random data
+            // In a real app, you would fetch this from an API or local storage
+            const fetchedExpenses = generateRandomExpenses(selectedMonth, selectedYear);
+            setExpenses(fetchedExpenses);
+            setIsLoading(false);
+        }, 500);
+    }, [selectedMonth, selectedYear]);
+    
+    // Function to generate random expense data for demo purposes
+    const generateRandomExpenses = (month, year) => {
+        const categories = ["Rent", "Food", "Subscription", "Gas"];
+        const expensesData = {};
+        
+        // Create a deterministic but "random-looking" set of expenses based on month and year
+        const seed = month.length + year;
+        
+        categories.forEach(category => {
+            // Only include some categories based on "seed" to make it look more realistic
+            if ((seed + category.length) % 3 !== 0) {
+                // Generate an amount between 50 and 500, influenced by the category and date
+                const baseAmount = (category.length * 20) + (seed % 10) * 30;
+                const amount = Math.floor(baseAmount + Math.sin(seed + category.length) * 100);
+                
+                expensesData[category] = {
+                    amount: Math.max(50, amount),
+                    color: categoryColors[category]
+                };
+            }
+        });
+        
+        return expensesData;
     };
     
     // Calculate total expenses
-    const totalExpenses = Object.values(expenseData).reduce((sum, item) => sum + item.amount, 0);
+    const totalExpenses = Object.values(expenses).reduce((sum, item) => sum + item.amount, 0) || 0;
     
     // Function to navigate year
     const changeYear = (increment) => {
@@ -55,8 +96,21 @@ function Summary() {
         let startAngle = 0;
         const paths = [];
         
+        // If no expenses, render empty circle
+        if (totalExpenses === 0) {
+            return (
+                <svg width="200" height="200" viewBox="0 0 200 200">
+                    <circle cx={centerX} cy={centerY} r={radius} fill="#e2e8f0" stroke="#cbd5e1" />
+                    <circle cx={centerX} cy={centerY} r={radius/2} fill="white" />
+                    <text x={centerX} y={centerY} textAnchor="middle" dominantBaseline="middle" className="text-gray-500">
+                        No data
+                    </text>
+                </svg>
+            );
+        }
+        
         // Calculate angles for each expense category
-        Object.entries(expenseData).forEach(([category, data]) => {
+        Object.entries(expenses).forEach(([category, data]) => {
             const percentage = data.amount / totalExpenses;
             const endAngle = startAngle + percentage * 2 * Math.PI;
             
@@ -98,6 +152,16 @@ function Summary() {
         );
     };
     
+    // Convert currency value
+    const formatCurrency = (amount) => {
+        if (currency === "USD") {
+            return `$${amount}`;
+        } else {
+            // Approximate exchange rate: 1 USD = 4100 Riel (adjust as needed)
+            return `៛${(amount * 4100).toLocaleString()}`;
+        }
+    };
+    
     return (
         <div>
             <Header />
@@ -122,100 +186,91 @@ function Summary() {
                     </button>
                 </div>
                 
-                {/* Month Navigation with Dropdown */}
-                <div className="flex justify-center items-center mb-4 relative">
-                    <button
-                        className="border border-gray-400 rounded-md p-1 mx-2 w-8 h-8 flex items-center justify-center shadow-sm"
-                        onClick={() => changeMonth(-1)}
-                    >
-                        &lt;
-                    </button>
-                    <div className="relative w-24">
-                        <button
-                            className="w-full text-center border border-gray-200 rounded-md py-1 px-2 bg-white shadow-sm"
-                            onClick={toggleMonthDropdown}
-                        >
-                            {selectedMonth}
-                        </button>
+                        {/* Add additional content here */}
                         
-                        {/* Month Dropdown */}
-                        {showMonthDropdown && (
-                            <div className="absolute z-10 w-full max-h-32 overflow-y-auto bg-white border border-gray-200 rounded-md mt-1 shadow-md">
-                                {months.map((month, index) => (
-                                    <div 
-                                        key={index}
-                                        className="py-2 px-1 hover:bg-gray-100 cursor-pointer text-center"
-                                        onClick={() => selectMonth(month)}
-                                    >
-                                        {month}
+                        {/* Month Navigation */}
+                        <div className="flex justify-center items-center mb-4 relative">
+                            <button
+                                className="border border-gray-400 rounded-md p-1 mx-2 w-8 h-8 flex items-center justify-center shadow-sm"
+                                onClick={() => changeMonth(-1)}
+                            >
+                                &lt;
+                            </button>
+                            <div className="relative">
+                                <button
+                                    className="w-32 text-center border border-gray-200 rounded-md py-1 px-2 bg-white shadow-sm flex items-center justify-center"
+                                    onClick={toggleMonthDropdown}
+                                >
+                                    {selectedMonth} ▼
+                                </button>
+                                {showMonthDropdown && (
+                                    <div className="absolute top-full left-0 mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-md z-10">
+                                        {months.map(month => (
+                                            <div
+                                                key={month}
+                                                className="px-2 py-1 hover:bg-gray-100 cursor-pointer"
+                                                onClick={() => selectMonth(month)}
+                                            >
+                                                {month}
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                )}
                             </div>
-                        )}
-                    </div>
-                    <button
-                        className="border border-gray-400 rounded-md p-1 mx-2 w-8 h-8 flex items-center justify-center shadow-sm"
-                        onClick={() => changeMonth(1)}
-                    >
-                        &gt;
-                    </button>
-                </div>
-                
-                {/* Card Container */}
-                <div className="border border-gray-200 rounded-lg bg-white shadow mx-auto max-w-xs">
-                    {/* Monthly Summary Title */}
-                    <div className="text-center x-h2 py-2 border-b border-gray-200">
-                        Monthly Summary
-                    </div>
-                    
-                    {/* Currency Selection */}
-                    <div className="flex justify-end px-4 pt-3">
-                        <label className="inline-flex items-center mr-4">
-                            <input
-                                type="radio"
-                                checked={currency === "USD"}
-                                onChange={() => setCurrency("USD")}
-                                className="form-radio h-4 w-4 text-accent"
-                            />
-                            <span className="ml-1 x-para">USD</span>
-                        </label>
-                        <label className="inline-flex items-center">
-                            <input
-                                type="radio"
-                                checked={currency === "Riel"}
-                                onChange={() => setCurrency("Riel")}
-                                className="form-radio h-4 w-4 text-accent"
-                            />
-                            <span className="ml-1 x-para">Riel</span>
-                        </label>
-                    </div>
-                    
-                    {/* Pie Chart */}
-                    <div className="flex justify-center py-2">
-                        {renderPieChart()}
-                    </div>
-                    
-                    {/* Details */}
-                    <div className="px-4 pb-4">
-                        <div className="text-center x-h3 mb-2 border-t border-gray-200 pt-2">Details</div>
+                            <button
+                                className="border border-gray-400 rounded-md p-1 mx-2 w-8 h-8 flex items-center justify-center shadow-sm"
+                                onClick={() => changeMonth(1)}
+                            >
+                                &gt;
+                            </button>
+                        </div>
                         
-                        <div className="grid grid-cols-2 gap-y-2">
-                            {Object.entries(expenseData).map(([category, data]) => (
-                                <div key={category} className="flex items-center">
-                                    <div 
-                                        className="w-4 h-4 mr-2 rounded-sm" 
-                                        style={{ backgroundColor: data.color }}
-                                    ></div>
-                                    <span className="x-h4">{category}</span>
-                                    <span className="x-h4 ml-auto">${data.amount}</span>
+                        {/* Chart and Expenses */}
+                        <div className="max-w-md mx-auto">
+                            {isLoading ? (
+                                <div className="flex justify-center items-center h-64">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
                                 </div>
-                            ))}
+                            ) : (
+                                <>
+                                    <div className="flex justify-center mb-6">
+                                        {renderPieChart()}
+                                    </div>
+                                    
+                                    <div className="mb-4 flex justify-between items-center">
+                                        <h2 className="text-xl font-semibold">Expenses</h2>
+                                        <button 
+                                            className="text-sm border border-gray-300 rounded-md px-2 py-1"
+                                            onClick={() => setCurrency(currency === "USD" ? "KHR" : "USD")}
+                                        >
+                                            {currency === "USD" ? "Show in Riel" : "Show in USD"}
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="space-y-2">
+                                        {Object.entries(expenses).map(([category, data]) => (
+                                            <div key={category} className="flex justify-between items-center p-3 bg-white rounded-lg shadow">
+                                                <div className="flex items-center">
+                                                    <div className="w-4 h-4 rounded-full mr-3" style={{ backgroundColor: data.color }}></div>
+                                                    <span>{category}</span>
+                                                </div>
+                                                <span className="font-medium">{formatCurrency(data.amount)}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    
+                                    <div className="mt-4 p-3 bg-gray-100 rounded-lg shadow">
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-semibold">Total</span>
+                                            <span className="font-bold">{formatCurrency(totalExpenses)}</span>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    );
-}
-
-export default Summary;
+            );
+        }
+        
+        export default Summary;
