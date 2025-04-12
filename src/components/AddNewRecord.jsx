@@ -1,28 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddNewCategory from "./AddNewCategory";
+import { RECORDS as initialData } from "../data/data";
 
 export default function AddNewRecord() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currency, setCurrency] = useState("USD");
-  const [records, setRecords] = useState([]);
+  const [records, setRecords] = useState(() => {
+    return JSON.parse(localStorage.getItem("RECORDS")) || initialData;
+  });
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(null);
 
+  // Sync records with localStorage whenever records state changes
+  useEffect(() => {
+    localStorage.setItem("RECORDS", JSON.stringify(records));
+  }, [records]);
+
   const handleSave = () => {
     if (!title.trim() || !amount || !category) return;
 
+    const now = new Date();
+    const parsedAmount = parseFloat(amount);
+
+    const amountUSD = currency === "USD" ? parsedAmount : parsedAmount / 4000;
+    const amountRiel = currency === "Riel" ? parsedAmount : parsedAmount * 4000;
+
+    const nextId = records.length > 0 ? Math.max(...records.map((r) => r.id || 0)) + 1 : 1;
+
     const newRecord = {
-      title,
-      amount,
-      currency,
-      description,
-      category,
-      createdAt: new Date().toISOString()
+      id: nextId,
+      title: title.trim(),
+      category: category || { name: "Uncategorized", color: "#ccc" },
+      amountRiel: Math.round(amountRiel), 
+      amountUSD: Math.round(amountUSD), 
+      description: description.trim() || "No description",
+      timestamp: now.toISOString(),
     };
 
-    setRecords([...records, newRecord]);
+    setRecords((prevRecords) => [...prevRecords, newRecord]); // Updates state with new record
     setIsExpanded(false);
 
     // Reset fields
@@ -35,7 +52,7 @@ export default function AddNewRecord() {
 
   const today = new Date().toISOString().slice(0, 10);
   const todaysRecords = records.filter((rec) =>
-    rec.createdAt.startsWith(today)
+    rec.timestamp.startsWith(today)
   );
 
   return (
@@ -139,8 +156,11 @@ export default function AddNewRecord() {
           todaysRecords.map((rec, idx) => (
             <div key={idx} className="p-1 border-b last:border-b-0">
               <div className="font-semibold">{rec.title}</div>
-              <div className="text-sm text-gray-600">
-                {rec.amount} {rec.currency}
+              <div className="text-sm text-gray-400 x-Para">
+                Created: {new Date(rec.timestamp).toLocaleDateString()} at {new Date(rec.timestamp).toLocaleTimeString()}
+              </div>
+              <div className="text-sm text-black-700">
+                {currency === "USD" ? rec.amountUSD : rec.amountRiel} {currency}
               </div>
               <div className="text-sm text-gray-600">
                 {rec.description || "No description"}
@@ -148,9 +168,9 @@ export default function AddNewRecord() {
               <div className="flex items-center text-sm mt-1 gap-2">
                 <span
                   className="w-3 h-3 rounded-full inline-block"
-                  style={{ backgroundColor: rec.category?.color }}
+                  style={{ backgroundColor: rec.category?.color || "#ccc" }}
                 ></span>
-                <span>{rec.category?.name}</span>
+                <span>{rec.category?.name || rec.category || "Uncategorized"}</span>
               </div>
             </div>
           ))
