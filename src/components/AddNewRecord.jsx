@@ -5,6 +5,7 @@ import { RECORDS as initialData } from "../data/data";
 export default function AddNewRecord() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currency, setCurrency] = useState("USD");
+  // when refresh page or restart app, it will get data from localStorage
   const [records, setRecords] = useState(() => {
     return JSON.parse(localStorage.getItem("RECORDS")) || initialData;
   });
