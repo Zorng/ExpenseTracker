@@ -130,6 +130,7 @@ export default function AddNewRecord() {
         </div>
       )}
 
+      {/* Today Record  */}
       <h2 className="x-h2 mt-6 font-bold">Today’s record</h2>
       <div className="bg-white rounded-xl mt-2 p-2 shadow-sm border-1">
         {todaysRecords.length === 0 ? (
