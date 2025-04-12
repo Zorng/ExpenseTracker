@@ -45,7 +45,7 @@ export default function AddNewRecord() {
       {!isExpanded ? (
         <div className="border-1 rounded-xl">
             <button
-          className="w-full text-center text-white x-h3 cursor-pointer bg-[var(--color-accent)] rounded-xl px-4 py-2 border-12 border-white"
+          className="w-full text-center text-white x-h3 bg-[var(--color-accent)] rounded-xl px-4 py-2 border-12 border-white"
           onClick={() => setIsExpanded(true)}
             >
               Add a new record
