@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { RECORDS } from "../data/data.jsx";
-import Header from "../components/Header.jsx";
 
 const months = [
     "January", "February", "March", "April", "May", "June",
@@ -159,8 +158,6 @@ function Summary() {
 
     return (
         <div>
-            <Header />
-
             <div className="px-2 py-4 mx-auto max-w-full bg-transparent">
                 {/* Year Navigation */}
                 <div className="flex justify-center items-center mb-2">
