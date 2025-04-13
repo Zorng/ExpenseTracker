@@ -1,12 +1,14 @@
 import Header from '../components/Header.jsx'
+import AddNewRecord from '../components/AddNewRecord.jsx'
+import Summary from '../components/MonthlyExpenseSummary.jsx'
 
 
 function Home() {
     return (
         <div>
             <Header />
-            <h2>Home Page</h2>
-            <p>Welcome to the homepage!</p>
+            <AddNewRecord />
+            <Summary />
         </div>
     );
 }
