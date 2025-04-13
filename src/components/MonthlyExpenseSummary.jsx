@@ -18,6 +18,15 @@ const categoryColors = {
     "Shopping": "#C70039",
 };
 
+// Function to get category name
+const getCategoryName = (cat) => typeof cat === "string" ? cat : cat.name || "Uncategorized";
+// Function to get category color
+const getCategoryColor = (cat) => {
+    if(typeof cat === "object" && cat?.color) return cat.color;
+    const name = getCategoryName(cat);
+    return categoryColors[name] || "#A1B196";
+}
+
 function Summary() {
     const { records } = useRecords(); // Get records from context
     const [showMonthDropdown, setShowMonthDropdown] = useState(false);
@@ -43,8 +52,8 @@ function Summary() {
         // Process the filtered data into a format suitable for the chart
         const processedExpenses = {};
         filteredExpenses.forEach((record) => {
-            const categoryName = record.category?.name || "Uncategorized";
-            const categoryColor =record.category?.color || categoryColors[categoryName] || "#A1B196";
+            const categoryName = getCategoryName(record.category);
+            const categoryColor = getCategoryColor(record.category);
             if (!processedExpenses[categoryName]) {
                 processedExpenses[categoryName] = {
                     amount: 0,
