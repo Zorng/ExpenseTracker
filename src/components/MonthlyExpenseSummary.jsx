@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { RECORDS } from "../data/data.jsx";
+// import { RECORDS } from "../data/data.jsx";
+import { useRecords } from "./RecordContext";
 
 const months = [
     "January", "February", "March", "April", "May", "June",
@@ -18,6 +19,7 @@ const categoryColors = {
 };
 
 function Summary() {
+    const { records } = useRecords(); // Get records from context
     const [showMonthDropdown, setShowMonthDropdown] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(months[new Date().getMonth()]);
@@ -30,7 +32,7 @@ function Summary() {
         setIsLoading(true);
 
         // Filter records based on month and year
-        const filteredExpenses = RECORDS.filter((record) => {
+        const filteredExpenses = records.filter((record) => {
             const recordDate = new Date(record.timestamp);
             return (
                 recordDate.getFullYear() === selectedYear &&
@@ -41,18 +43,20 @@ function Summary() {
         // Process the filtered data into a format suitable for the chart
         const processedExpenses = {};
         filteredExpenses.forEach((record) => {
-            if (!processedExpenses[record.category]) {
-                processedExpenses[record.category] = {
+            const categoryName = record.category?.name || "Uncategorized";
+            const categoryColor =record.category?.color || categoryColors[categoryName] || "#A1B196";
+            if (!processedExpenses[categoryName]) {
+                processedExpenses[categoryName] = {
                     amount: 0,
-                    color: categoryColors[record.category] || "#A1B196",
+                    color: categoryColor,
                 };
             }
-            processedExpenses[record.category].amount += currency === "USD" ? record.amountUSD : record.amountRiel;
+            processedExpenses[categoryName].amount += currency === "USD" ? record.amountUSD : record.amountRiel;
         });
 
         setExpenses(processedExpenses);
         setIsLoading(false);
-    }, [selectedMonth, selectedYear, currency]);
+    }, [selectedMonth, selectedYear, currency, records]);
 
     // Calculate total expenses
     const totalExpenses = Object.values(expenses).reduce((sum, item) => sum + item.amount, 0) || 0;
