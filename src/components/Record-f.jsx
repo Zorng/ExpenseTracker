@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { RECORDS } from '../data/data';
 import RecordExpanded from '../components/Record-e';
-// import { useState } from 'react';
 
-function RecordsList({ filter }) {
+function RecordsFolded({ filter }) {
   const [records, setRecords] = useState(() => {
     const saved = localStorage.getItem("records");
     return saved ? JSON.parse(saved) : RECORDS;
@@ -11,51 +10,41 @@ function RecordsList({ filter }) {
 
   const [filteredRecords, setFilteredRecords] = useState(records);
   const [editingId, setEditingId] = useState(null);
-  function parseDDMMYYYY(dateStr) {
-    if (!dateStr || typeof dateStr !== "string") return new Date("Invalid");
-    const parts = dateStr.split("/");
-    if (parts.length !== 3) return new Date("Invalid");
-  
-    const [day, month, year] = parts;
-    return new Date(`${year}-${month}-${day}`);
-  }
-  
-  
+
   useEffect(() => {
     const filtered = records.filter((record) => {
-      const recordDate = parseDDMMYYYY(record.created); 
-      const isValidDate = !isNaN(recordDate.getTime());
-    
+      // Record timestamp (assumed in ISO format)
+      const recordTimestamp = record.timestamp; 
+
       const matchesDate =
         !filter.date ||
-        (isValidDate && recordDate.toISOString().split("T")[0] === filter.date);
-    
+        (recordTimestamp && recordTimestamp.split("T")[0] === filter.date); // Compare only the date part of the timestamp
+
       const matchesCategory =
-        !filter.category || record.category === filter.category;
-    
+        !filter.category || record.category === filter.category.name;
+      
       const matchesAmount =
         !filter.amount || parseFloat(record.amount) === parseFloat(filter.amount);
-    
-        const matchesCurrency =
+
+      const matchesCurrency =
         !filter.currency ||
         (record.currency && record.currency.toLowerCase() === filter.currency.toLowerCase());
-      
-    
+
       return matchesDate && matchesCategory && matchesAmount && matchesCurrency;
     });
-  
+
     setFilteredRecords(filtered);
   }, [filter, records]);
-  
-  
+
   const handleUpdate = (id, updatedRecord) => {
-    setRecords((prevRecords) =>
-      prevRecords.map((record) =>
-        record.id === id ? { ...record, ...updatedRecord } : record
-      )
+    const updatedRecords = records.map((record) =>
+      record.id === id ? { ...record, ...updatedRecord } : record
     );
+  
+    setRecords(updatedRecords);
+    localStorage.setItem("records", JSON.stringify(updatedRecords)); 
     setEditingId(null);
-  };
+  };  
 
   const handleDelete = (id) => {
     const updatedRecords = records.filter(record => record.id !== id);
@@ -110,5 +99,4 @@ function RecordsList({ filter }) {
   );
 }
 
-
-export default RecordsList;
+export default RecordsFolded;

@@ -13,8 +13,8 @@ function FilterFolded({ filter, setFilter, onApply }) {
     };
 
     const handleApply = () => {
-        onApply(filter); // Pass the filter object from parent
-        setIsExpanded(false); // Then collapse back to folded
+        onApply(filter); 
+
     };
 
     return (
