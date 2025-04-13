@@ -7,7 +7,7 @@ const months = [
     "July", "August", "September", "October", "November", "December"
 ];
 
-// Simplified color palette for expense categories
+
 const categoryColors = {
     "Health": "#9747FF",
     "Transportation": "#37A8FF",
@@ -30,7 +30,7 @@ function Summary() {
     useEffect(() => {
         setIsLoading(true);
 
-        // Filter records based on selected month and year
+        // Filter records based on month and year
         const filteredExpenses = RECORDS.filter((record) => {
             const recordDate = new Date(record.timestamp);
             return (
