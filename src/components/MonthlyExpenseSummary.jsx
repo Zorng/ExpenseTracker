@@ -157,7 +157,8 @@ function Summary() {
     };
 
     return (
-        <div>
+        <div className="bg-[#e6fdff]">
+            <h2 className="x-h2 mb-2 font-bold">This Month's spending</h2>
             <div className="px-2 py-4 mx-auto max-w-full bg-transparent">
                 {/* Year Navigation */}
                 <div className="flex justify-center items-center mb-2">
