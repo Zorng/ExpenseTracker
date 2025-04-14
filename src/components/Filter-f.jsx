@@ -18,14 +18,17 @@ function FilterFolded({ filter, setFilter, onApply }) {
     };
 
     return (
-        <div className="p-3 border border-black rounded-md bg-white w-md sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
+        <div className="px-18 bg-[#e6fdff] ">
             {!isExpanded ? (
-                <button
-                    onClick={handleToggle}
-                    className="bg-secondary hover:bg-secondary-hover text-white font-semibold w-full py-1 rounded-md"
-                >
-                    Filter
-                </button>
+                <div className="border black rounded-xl">
+                    <button
+                        onClick={handleToggle}
+                        className="w-full text-center text-white x-h3 bg-secondary hover:bg-secondary-hover rounded-xl px-4 py-2 border-12 border-white"
+                    >
+                        Filter
+                    </button>
+                </div>
+
             ) : (
                 <FilterExpanded
                     handleApplyFilter={handleApply}

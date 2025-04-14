@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 // import { RECORDS } from "../data/data.jsx";
 import { useRecords } from "./RecordContext";
 
+
 const months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -17,6 +18,7 @@ const categoryColors = {
     "Food": "#FFC300",
     "Shopping": "#C70039",
 };
+
 
 // Function to get category name
 const getCategoryName = (cat) => typeof cat === "string" ? cat : cat.name || "Uncategorized";
@@ -41,6 +43,7 @@ function Summary() {
         setIsLoading(true);
 
         // Filter records based on month and year
+
         const filteredExpenses = records.filter((record) => {
             const recordDate = new Date(record.timestamp);
             return (
@@ -52,6 +55,7 @@ function Summary() {
         // Process the filtered data into a format suitable for the chart
         const processedExpenses = {};
         filteredExpenses.forEach((record) => {
+
             const categoryName = getCategoryName(record.category);
             const categoryColor = getCategoryColor(record.category);
             if (!processedExpenses[categoryName]) {
@@ -65,6 +69,7 @@ function Summary() {
 
         setExpenses(processedExpenses);
         setIsLoading(false);
+
     }, [selectedMonth, selectedYear, currency, records]);
 
     // Calculate total expenses
