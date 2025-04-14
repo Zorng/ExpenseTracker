@@ -60,7 +60,7 @@ function RecordExpanded({ onSave, onCancel }) {
       {/* Category */}
       <div className="mb-4 flex items-center gap-4">
         <p className="x-h4 mb-0">Category</p>
-        <div className="w-xs">
+        <div className="w-full">
           <AddNewCategory value={category} onChange={setCategory} />
         </div>
       </div>
