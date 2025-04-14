@@ -5,6 +5,7 @@ import MonthlyExpenseSummary from "../components/MonthlyExpenseSummary.jsx";
 function Summary() {
     return (
         <div>
+            <Header />
             <MonthlyExpenseSummary />
         </div>
     );
