@@ -159,7 +159,7 @@ function Summary() {
 
         return (
             <div>
-                <div className="px-2 py-4 mx-auto max-w-full bg-transparent">
+                <div className="px-2 py-4 mx-auto max-w-full bg-transparent h-auto">
                     {/* Year Navigation */}
                     <div className="flex justify-center items-center mb-2">
                         <button

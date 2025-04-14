@@ -62,7 +62,7 @@ export default function AddNewRecord() {
   );
 
   return (
-    <div className="px-4 py-2 bg-[#e6fdff] min-h-screen">
+    <div className="px-4 py-2 bg-[#e6fdff] h-auto">
       <h2 className="x-h2 mb-2 font-bold">Quick Action</h2>
 
       {!isExpanded ? (
