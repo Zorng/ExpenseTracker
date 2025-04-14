@@ -9,7 +9,7 @@ Team members:
 - Tong Vorak
 - Mony Meakputsotheara
 
-**Description:** Expense Tracker is an app for tracking daily spendings and provides summary of spendings in each month.
+**Description:** Expense Tracker is an app for tracking daily spendings and provides summary of spendings in each month.<br>
 **Scope:**
 - For mobile devices
 - CRUD operations on spending records
