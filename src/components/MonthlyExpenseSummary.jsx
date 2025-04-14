@@ -48,6 +48,7 @@ function Summary() {
                 };
             }
             processedExpenses[record.category].amount += currency === "USD" ? record.amountUSD : record.amountRiel;
+        });
 
         setExpenses(processedExpenses);
         setIsLoading(false);
