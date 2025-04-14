@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { RECORDS } from "../data/data.jsx";
+import React, {useState, useEffect} from "react";
+import {RECORDS} from "../data/data.jsx";
 import Header from "../components/Header.jsx";
 
 const months = [
@@ -17,6 +17,7 @@ const categoryColors = {
     "Food": "#FFC300",
     "Shopping": "#C70039",
 };
+
 function Summary() {
     const [showMonthDropdown, setShowMonthDropdown] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -34,7 +35,7 @@ function Summary() {
             const recordDate = new Date(record.timestamp);
             return (
                 recordDate.getFullYear() === selectedYear &&
-                recordDate.toLocaleString("default", { month: "long" }) === selectedMonth
+                recordDate.toLocaleString("default", {month: "long"}) === selectedMonth
             );
         });
 
@@ -53,6 +54,7 @@ function Summary() {
         setExpenses(processedExpenses);
         setIsLoading(false);
     }, [selectedMonth, selectedYear, currency]);
+    
     // Calculate total expenses
     const totalExpenses = Object.values(expenses).reduce((sum, item) => sum + item.amount, 0) || 0;
 
@@ -94,9 +96,10 @@ function Summary() {
         if (totalExpenses === 0) {
             return (
                 <svg width="200" height="200" viewBox="0 0 200 200">
-                    <circle cx={centerX} cy={centerY} r={radius} fill="#e2e8f0" stroke="#cbd5e1" />
-                    <circle cx={centerX} cy={centerY} r={radius / 2} fill="white" />
-                    <text x={centerX} y={centerY} textAnchor="middle" dominantBaseline="middle" className="text-gray-500">
+                    <circle cx={centerX} cy={centerY} r={radius} fill="#e2e8f0" stroke="#cbd5e1"/>
+                    <circle cx={centerX} cy={centerY} r={radius / 2} fill="white"/>
+                    <text x={centerX} y={centerY} textAnchor="middle" dominantBaseline="middle"
+                          className="text-gray-500">
                         No data
                     </text>
                 </svg>
@@ -141,7 +144,7 @@ function Summary() {
             <svg width="200" height="200" viewBox="0 0 200 200">
                 {paths}
                 {/* Inner white circle to create donut effect */}
-                <circle cx={centerX} cy={centerY} r={radius / 2} fill="white" />
+                <circle cx={centerX} cy={centerY} r={radius / 2} fill="white"/>
             </svg>
         );
     };
@@ -157,9 +160,7 @@ function Summary() {
 
     return (
         <div>
-            <Header />
-
-            <div className="px-2 py-4 mx-auto max-w-full bg-transparent">
+            <div className="px-2 py-4 mx-auto max-w-full bg-transparent h-auto">
                 {/* Year Navigation */}
                 <div className="flex justify-center items-center mb-2">
                     <button
@@ -168,7 +169,8 @@ function Summary() {
                     >
                         &lt;
                     </button>
-                    <div className="w-24 text-center border border-gray-200 rounded-md py-1 px-2 bg-white shadow-sm">
+                    <div
+                        className="w-24 text-center border border-gray-200 rounded-md py-1 px-2 bg-white shadow-sm">
                         {selectedYear}
                     </div>
                     <button
@@ -195,7 +197,8 @@ function Summary() {
                             {selectedMonth} ▼
                         </button>
                         {showMonthDropdown && (
-                            <div className="absolute top-full left-0 mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-md z-10">
+                            <div
+                                className="absolute top-full left-0 mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-md z-10">
                                 {months.map((month) => (
                                     <div
                                         key={month}
@@ -220,7 +223,8 @@ function Summary() {
                 <div className="max-w-md mx-auto">
                     {isLoading ? (
                         <div className="flex justify-center items-center h-64">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                            <div
+                                className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
                         </div>
                     ) : (
                         <>
@@ -240,9 +244,11 @@ function Summary() {
 
                             <div className="space-y-2">
                                 {Object.entries(expenses).map(([category, data]) => (
-                                    <div key={category} className="flex justify-between items-center p-3 bg-white rounded-lg shadow">
+                                    <div key={category}
+                                         className="flex justify-between items-center p-3 bg-white rounded-lg shadow">
                                         <div className="flex items-center">
-                                            <div className="w-4 h-4 rounded-full mr-3" style={{ backgroundColor: data.color }}></div>
+                                            <div className="w-4 h-4 rounded-full mr-3"
+                                                 style={{backgroundColor: data.color}}></div>
                                             <span>{category}</span>
                                         </div>
                                         <span className="font-medium">{formatCurrency(data.amount)}</span>
@@ -262,6 +268,7 @@ function Summary() {
             </div>
         </div>
     );
+
 }
 
 export default Summary;
