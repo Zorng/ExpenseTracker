@@ -1,13 +1,16 @@
 import Header from '../components/Header.jsx'
+import AddNewRecord from '../components/AddNewRecord.jsx'
+import Summary from '../components/MonthlyExpenseSummary.jsx'
+import { RecordsProvider } from '../components/RecordContext.jsx'
 
 
 function Home() {
     return (
-        <div>
+        <RecordsProvider> 
             <Header />
-            <h2>Home Page</h2>
-            <p>Welcome to the homepage!</p>
-        </div>
+            <AddNewRecord />
+            <Summary />
+        </RecordsProvider>      
     );
 }
 

@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import AddNewCategory from "./AddNewCategory";
-import { RECORDS as initialData } from "../data/data";
+// import { RECORDS as initialData } from "../data/data";
+import { useRecords } from "./RecordContext";
 
 export default function AddNewRecord() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currency, setCurrency] = useState("USD");
   // when refresh page or restart app, it will get data from localStorage
-  const [records, setRecords] = useState(() => {
-    return JSON.parse(localStorage.getItem("RECORDS")) || initialData;
-  });
+  // const [records, setRecords] = useState(() => {
+  //   return JSON.parse(localStorage.getItem("RECORDS")) || initialData;
+  // });
+  const { records, addRecord } = useRecords();
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -33,14 +35,17 @@ export default function AddNewRecord() {
     const newRecord = {
       id: nextId,
       title: title.trim(),
-      category: category || { name: "Uncategorized", color: "#ccc" },
+      category: typeof category === "object" && category !== null
+        ? category
+        : { name: "Uncategorized", color: "#ccc" },
       amountRiel: Math.round(amountRiel), 
       amountUSD: Math.round(amountUSD), 
       description: description.trim() || "No description",
       timestamp: now.toISOString(),
     };
 
-    setRecords((prevRecords) => [...prevRecords, newRecord]); // Updates state with new record
+    // setRecords((prevRecords) => [...prevRecords, newRecord]); // Updates state with new record
+    addRecord(newRecord); // Updates state with new record using context
     setIsExpanded(false);
 
     // Reset fields
@@ -171,7 +176,7 @@ export default function AddNewRecord() {
                   className="w-3 h-3 rounded-full inline-block"
                   style={{ backgroundColor: rec.category?.color || "#ccc" }}
                 ></span>
-                <span>{rec.category?.name || rec.category || "Uncategorized"}</span>
+                <span>{rec.category?.name ?? "Uncategorized"}</span>
               </div>
             </div>
           ))

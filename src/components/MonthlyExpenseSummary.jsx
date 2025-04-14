@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { RECORDS } from "../data/data.jsx";
-import Header from "../components/Header.jsx";
+// import { RECORDS } from "../data/data.jsx";
+import { useRecords } from "./RecordContext";
+
 
 const months = [
     "January", "February", "March", "April", "May", "June",
@@ -18,7 +19,18 @@ const categoryColors = {
     "Shopping": "#C70039",
 };
 
+
+// Function to get category name
+const getCategoryName = (cat) => typeof cat === "string" ? cat : cat.name || "Uncategorized";
+// Function to get category color
+const getCategoryColor = (cat) => {
+    if(typeof cat === "object" && cat?.color) return cat.color;
+    const name = getCategoryName(cat);
+    return categoryColors[name] || "#A1B196";
+}
+
 function Summary() {
+    const { records } = useRecords(); // Get records from context
     const [showMonthDropdown, setShowMonthDropdown] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(months[new Date().getMonth()]);
@@ -31,7 +43,8 @@ function Summary() {
         setIsLoading(true);
 
         // Filter records based on month and year
-        const filteredExpenses = RECORDS.filter((record) => {
+
+        const filteredExpenses = records.filter((record) => {
             const recordDate = new Date(record.timestamp);
             return (
                 recordDate.getFullYear() === selectedYear &&
@@ -42,18 +55,22 @@ function Summary() {
         // Process the filtered data into a format suitable for the chart
         const processedExpenses = {};
         filteredExpenses.forEach((record) => {
-            if (!processedExpenses[record.category]) {
-                processedExpenses[record.category] = {
+
+            const categoryName = getCategoryName(record.category);
+            const categoryColor = getCategoryColor(record.category);
+            if (!processedExpenses[categoryName]) {
+                processedExpenses[categoryName] = {
                     amount: 0,
-                    color: categoryColors[record.category] || "#A1B196",
+                    color: categoryColor,
                 };
             }
-            processedExpenses[record.category].amount += currency === "USD" ? record.amountUSD : record.amountRiel;
+            processedExpenses[categoryName].amount += currency === "USD" ? record.amountUSD : record.amountRiel;
         });
 
         setExpenses(processedExpenses);
         setIsLoading(false);
-    }, [selectedMonth, selectedYear, currency]);
+
+    }, [selectedMonth, selectedYear, currency, records]);
 
     // Calculate total expenses
     const totalExpenses = Object.values(expenses).reduce((sum, item) => sum + item.amount, 0) || 0;
@@ -158,9 +175,8 @@ function Summary() {
     };
 
     return (
-        <div>
-            <Header />
-
+        <div className="bg-[#e6fdff]">
+            <h2 className="x-h2 mb-2 font-bold">This Month's spending</h2>
             <div className="px-2 py-4 mx-auto max-w-full bg-transparent">
                 {/* Year Navigation */}
                 <div className="flex justify-center items-center mb-2">
