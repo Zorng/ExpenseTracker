@@ -1,25 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AddNewCategory from "./AddNewCategory";
-// import { RECORDS as initialData } from "../data/data";
-import { useRecords } from "./RecordContext";
-
-export default function AddNewRecord() {
+//Create specifically for record page
+export default function AddNewRecord({ records, setRecords }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currency, setCurrency] = useState("USD");
-  // when refresh page or restart app, it will get data from localStorage
-  // const [records, setRecords] = useState(() => {
-  //   return JSON.parse(localStorage.getItem("RECORDS")) || initialData;
-  // });
-  const { records, addRecord } = useRecords();
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(null);
-
-  // Sync records with localStorage whenever records state changes
-  useEffect(() => {
-    localStorage.setItem("RECORDS", JSON.stringify(records));
-  }, [records]);
 
   const handleSave = () => {
     if (!title.trim() || !amount || !category) return;
@@ -35,17 +23,14 @@ export default function AddNewRecord() {
     const newRecord = {
       id: nextId,
       title: title.trim(),
-      category: typeof category === "object" && category !== null
-        ? category
-        : { name: "Uncategorized", color: "#ccc" },
-      amountRiel: Math.round(amountRiel), 
-      amountUSD: Math.round(amountUSD), 
+      category: category || { name: "Uncategorized", color: "#ccc" },
+      amountRiel: Number(amountRiel.toFixed(2)),
+      amountUSD: Number(amountUSD.toFixed(2)),
       description: description.trim() || "No description",
       timestamp: now.toISOString(),
     };
 
-    // setRecords((prevRecords) => [...prevRecords, newRecord]); // Updates state with new record
-    addRecord(newRecord); // Updates state with new record using context
+    setRecords((prev) => [newRecord, ...prev]); 
     setIsExpanded(false);
 
     // Reset fields
@@ -62,18 +47,16 @@ export default function AddNewRecord() {
   );
 
   return (
-    <div className="px-4 py-2 bg-[#e6fdff] min-h-screen">
-      <h2 className="x-h2 mb-2 font-bold">Quick Action</h2>
-
+    <div className="px-18 py-2 bg-[#e6fdff]">
       {!isExpanded ? (
         <div className="border-1 rounded-xl">
-            <button
-          className="w-full text-center text-white x-h3 bg-[var(--color-accent)] rounded-xl px-4 py-2 border-12 border-white"
-          onClick={() => setIsExpanded(true)}
-            >
-              Add a new record
-            </button>
-        </div>        
+          <button
+            className="w-full text-center text-white x-h3 bg-[var(--color-accent)] rounded-xl px-4 py-2 border-12 border-white"
+            onClick={() => setIsExpanded(true)}
+          >
+            Add a new record
+          </button>
+        </div>
       ) : (
         <div className="bg-white rounded-xl p-4 shadow-md mt-4">
           <h2 className="x-h2 mb-4">Add a new record</h2>
@@ -152,36 +135,6 @@ export default function AddNewRecord() {
           </div>
         </div>
       )}
-
-      {/* Today Record  */}
-      <h2 className="x-h2 mt-6 font-bold">Today’s record</h2>
-      <div className="bg-white rounded-xl mt-2 p-2 shadow-sm border-1">
-        {todaysRecords.length === 0 ? (
-          <p className="text-center text-black-700">No records yet</p>
-        ) : (
-          todaysRecords.map((rec, idx) => (
-            <div key={idx} className="p-1 border-b last:border-b-0">
-              <div className="font-semibold">{rec.title}</div>
-              <div className="text-sm text-gray-400 x-Para">
-                Created: {new Date(rec.timestamp).toLocaleDateString()} at {new Date(rec.timestamp).toLocaleTimeString()}
-              </div>
-              <div className="text-sm text-black-700">
-                {currency === "USD" ? rec.amountUSD : rec.amountRiel} {currency}
-              </div>
-              <div className="text-sm text-gray-600">
-                {rec.description || "No description"}
-              </div>
-              <div className="flex items-center text-sm mt-1 gap-2">
-                <span
-                  className="w-3 h-3 rounded-full inline-block"
-                  style={{ backgroundColor: rec.category?.color || "#ccc" }}
-                ></span>
-                <span>{rec.category?.name ?? "Uncategorized"}</span>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
     </div>
   );
 }

@@ -17,7 +17,6 @@ const categoryColors = {
     "Food": "#FFC300",
     "Shopping": "#C70039",
 };
-
 function Summary() {
     const [showMonthDropdown, setShowMonthDropdown] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -49,12 +48,10 @@ function Summary() {
                 };
             }
             processedExpenses[record.category].amount += currency === "USD" ? record.amountUSD : record.amountRiel;
-        });
 
         setExpenses(processedExpenses);
         setIsLoading(false);
     }, [selectedMonth, selectedYear, currency]);
-
     // Calculate total expenses
     const totalExpenses = Object.values(expenses).reduce((sum, item) => sum + item.amount, 0) || 0;
 

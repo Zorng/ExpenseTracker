@@ -13,43 +13,46 @@ function FilterExpanded({ filter = {}, setFilter, handleApplyFilter, onCancel })
         handleApplyFilter(cleared);
     };
     return (
-      <div className="w-full">
+      <div className="w-full bg-white rounded-xl p-4 shadow-md mt-4">
         <h1 className="x-h2 text-center mb-6">Filter by</h1>
         
         {/* Recorded Date */}
-        <div className="mb-4 flex items-center gap-4">
+        <div className="w-full mb-4 flex items-center gap-4">
           <p className="x-h4 mb-0">Recorded Date</p>
-          <DatePicker
-                selected={date ? new Date(date) : null}
-                onChange={(dateObj) => {
-                    const formatted = format(dateObj, "yyyy-MM-dd");
-                    setFilter({ ...filter, date: formatted });
-                }}
-                placeholderText="yyyy/mm/dd"
-                dateFormat="yyyy/MM/dd"
-                className="w-2xs border border-gray-300 rounded-md px-3 py-2"
-                popperPlacement="bottom-start"
-          />
+          <div className="w-full">
+            <DatePicker
+              selected={date ? new Date(date) : null}
+              onChange={(dateObj) => {
+                const formatted = format(dateObj, "yyyy-MM-dd");
+                setFilter({ ...filter, date: formatted });
+              }}
+              placeholderText="yyyy/mm/dd"
+              dateFormat="yyyy/MM/dd"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
+              popperPlacement="bottom-start"
+            />
+          </div>
         </div>
+
   
         {/* Category */}
         <div className="mb-4 flex items-center gap-4">
           <p className="x-h4 mb-0">Category</p>
-          <div className="w-xs">
+          <div className="w-full">
             <AddNewCategory value={category} onChange={(val) => setFilter({ ...filter, category: val })} />
           </div>
         </div>
   
         {/* Amount and Currency */}
         <div className="mb-4 flex items-center gap-6">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full">
             <p className="x-h4 mb-0">Amount</p>
             <input
               type="number"
               value={amount || ""}
               onChange={(e) => setFilter({ ...filter, amount: e.target.value })}
               placeholder="Enter Amount"
-              className="w-2xs border border-gray-300 rounded-md px-3 py-2"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
           <div className="flex flex-col justify-between">
