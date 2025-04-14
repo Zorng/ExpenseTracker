@@ -1,11 +1,11 @@
+import React from "react";
 import Header from "../components/Header.jsx";
+import MonthlyExpenseSummary from "../components/MonthlyExpenseSummary.jsx";
 
 function Summary() {
     return (
         <div>
-            <Header />
-            <h2>Summary</h2>
-            <p>This is summary page</p>
+            <MonthlyExpenseSummary />
         </div>
     );
 }

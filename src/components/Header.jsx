@@ -13,7 +13,7 @@ function Header() {
             setMenuIsOpen("hidden");
         } else {
             setIsOpen(true);
-            setMenuIsOpen("absolute flex-col items-stretch right-0 text-right bg-primary w-50");
+            setMenuIsOpen("absolute flex-col items-stretch right-0 text-right bg-primary w-50 z-99");
         }
     }
     return (
